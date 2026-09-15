@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Graystone Contracting — Build it once. Build it right.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   RESKIN HERE — swap these tokens to rebrand for any prospect
+   ============================================================ */
+:root{
+  --ink:      #0A1626;   /* deep blueprint field */
+  --ink-2:    #0D1B2E;   /* raised surface */
+  --ink-3:    #12233A;   /* hover surface */
+  --line:     #B8D4E3;   /* cyanotype linework */
+  --paper:    #EDF4F8;   /* cool paper white */
+  --muted:    #8CA3B6;   /* secondary text */
+  --flag:     #FF6A2B;   /* surveyor's flagging orange */
+  --flag-ink: #1A0D04;   /* text on orange */
+  --font: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:auto}
+html,body{background:var(--ink)}
+body{
+  font-family:var(--font);
+  color:var(--paper);
+  font-size:16px;
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--flag);color:var(--flag-ink)}
+
+/* film grain */
+body::after{
+  content:"";position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.045;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--flag);outline-offset:3px;border-radius:2px}
+img,svg,canvas{display:block;max-width:100%}
+
+.wrap{width:min(1240px,92vw);margin-inline:auto}
+
+/* ---------------- Nav ---------------- */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  transition:background .4s ease,border-color .4s ease,backdrop-filter .4s ease;
+  border-bottom:1px solid transparent;
+}
+.nav.scrolled{
+  background:rgba(10,22,38,.72);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border-bottom-color:rgba(184,212,227,.12);
+}
+.nav-inner{
+  width:min(1240px,92vw);margin-inline:auto;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 0;
+}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-stretch:118%;letter-spacing:.04em;font-size:1.05rem}
+.brand-mark{width:14px;height:14px;background:var(--flag);transform:rotate(45deg);flex:none}
+.nav-links{display:flex;align-items:center;gap:36px;font-size:.95rem;font-weight:500}
+.nav-links a{color:var(--muted);transition:color .25s ease}
+.nav-links a:hover{color:var(--paper)}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:14px 28px;border-radius:3px;font-weight:700;font-size:.98rem;
+  border:1px solid transparent;cursor:pointer;white-space:nowrap;
+  transition:box-shadow .3s ease,background .3s ease,border-color .3s ease,color .3s ease;
+  will-change:transform;
+}
+.btn-flag{background:var(--flag);color:var(--flag-ink)}
+.btn-flag:hover{box-shadow:0 0 0 1px var(--flag),0 8px 40px rgba(255,106,43,.35)}
+.btn-ghost{border-color:rgba(237,244,248,.28);color:var(--paper)}
+.btn-ghost:hover{border-color:var(--paper);background:rgba(237,244,248,.05)}
+.btn-sm{padding:11px 20px;font-size:.9rem}
+
+/* ---------------- Hero ---------------- */
+.hero{
+  position:relative;min-height:100svh;display:flex;align-items:center;
+  overflow:hidden;
+}
+.hero::before{ /* drafting grid */
+  content:"";position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(184,212,227,.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(184,212,227,.055) 1px,transparent 1px),
+    linear-gradient(rgba(184,212,227,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(184,212,227,.03) 1px,transparent 1px);
+  background-size:96px 96px,96px 96px,24px 24px,24px 24px;
+  -webkit-mask-image:radial-gradient(120% 90% at 40% 45%,#000 45%,transparent 100%);
+  mask-image:radial-gradient(120% 90% at 40% 45%,#000 45%,transparent 100%);
+}
+#dust{position:absolute;inset:0;z-index:1}
+.bp-holder{
+  position:absolute;z-index:2;right:-6%;top:50%;transform:translateY(-52%);
+  width:min(62vw,900px);opacity:.55;pointer-events:none;
+}
+#bp path,#bp line,#bp rect{fill:none;stroke:var(--line);stroke-width:1.4;vector-effect:non-scaling-stroke;stroke-linecap:round}
+#bp .thin{stroke-width:.8;opacity:.7}
+#bp .dash{stroke-dasharray:6 6;opacity:.5}
+#bp text{fill:var(--line);font-family:var(--font);font-size:13px;letter-spacing:.06em;opacity:0}
+.hero-copy{position:relative;z-index:3;padding:120px 0 80px}
+.kicker{
+  color:var(--muted);font-weight:500;font-size:1rem;margin-bottom:22px;
+}
+.kicker b{color:var(--flag);font-weight:700}
+.h-line{overflow:hidden;display:block}
+.h-line span{display:block;will-change:transform}
+h1{
+  font-weight:820;font-stretch:122%;
+  font-size:clamp(3.1rem,8.6vw,8rem);
+  line-height:.98;letter-spacing:-.015em;
+  margin-bottom:30px;text-wrap:balance;
+}
+.hero-sub{max-width:52ch;color:var(--muted);font-size:clamp(1.02rem,1.35vw,1.2rem);margin-bottom:40px}
+.hero-sub strong{color:var(--paper);font-weight:600}
+.hero-ctas{display:flex;gap:16px;flex-wrap:wrap}
+
+.titleblock{
+  position:absolute;z-index:3;right:4vw;bottom:34px;
+  border:1px solid rgba(184,212,227,.3);color:var(--line);
+  font-size:.72rem;letter-spacing:.08em;line-height:1;opacity:.75;
+}
+.titleblock div{padding:8px 14px;border-top:1px solid rgba(184,212,227,.3);display:flex;gap:18px;justify-content:space-between}
+.titleblock div:first-child{border-top:0;font-weight:700}
+.scroll-cue{
+  position:absolute;z-index:3;left:4vw;bottom:34px;display:flex;align-items:center;gap:14px;
+  color:var(--muted);font-size:.8rem;letter-spacing:.14em;
+}
+.scroll-cue::before{content:"";width:1px;height:44px;background:linear-gradient(var(--flag),transparent);animation:cue 2.2s ease-in-out infinite}
+@keyframes cue{0%,100%{transform:scaleY(.4);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}}
+
+/* ---------------- Flagging tape divider ---------------- */
+.tape{height:38px;overflow:hidden;border-block:1px solid rgba(0,0,0,.4)}
+.tape-inner{
+  height:100%;width:200%;
+  background:repeating-linear-gradient(-45deg,var(--flag) 0 24px,var(--ink) 24px 48px);
+  animation:tape 16s linear infinite;
+}
+@keyframes tape{to{transform:translateX(-67.88px)}}
+
+/* ---------------- Sections ---------------- */
+section{position:relative}
+.stmt{padding:clamp(110px,14vw,190px) 0}
+.stmt-label{color:var(--flag);font-weight:700;font-size:.95rem;margin-bottom:26px}
+.stmt-text{
+  font-size:clamp(1.7rem,3.6vw,3.1rem);
+  font-weight:640;font-stretch:108%;line-height:1.25;letter-spacing:-.01em;
+  max-width:24ch;text-wrap:pretty;
+}
+.stmt-text .w{opacity:.13}
+.stmt-body{max-width:56ch;color:var(--muted);margin-top:34px;font-size:1.08rem}
+
+/* dimension-style stats */
+.dims{display:flex;gap:clamp(24px,5vw,80px);flex-wrap:wrap;margin-top:64px}
+.dim{min-width:180px}
+.dim-rule{display:flex;align-items:center;gap:10px}
+.dim-rule .tick{width:10px;height:10px;border-left:1px solid var(--line);transform:rotate(45deg);opacity:.7;flex:none}
+.dim-rule .rule{height:1px;background:var(--line);opacity:.45;flex:1;transform-origin:center;min-width:14px}
+.dim-num{
+  font-weight:800;font-stretch:118%;font-size:clamp(2.2rem,3.4vw,3.2rem);
+  line-height:1;padding:0 6px;font-variant-numeric:tabular-nums;
+}
+.dim-num sub,.dim-num sup{font-size:.5em;font-weight:700}
+.dim-label{color:var(--muted);font-size:.92rem;margin-top:10px;text-align:center}
+
+/* services ledger */
+.svcs{padding-bottom:clamp(100px,12vw,170px)}
+.svcs-head{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:14px;flex-wrap:wrap}
+h2{font-weight:780;font-stretch:116%;font-size:clamp(2rem,4.2vw,3.4rem);letter-spacing:-.01em;line-height:1.05}
+.svcs-head p{color:var(--muted);max-width:34ch}
+.svc{
+  display:grid;grid-template-columns:1.1fr 1.3fr auto;gap:28px;align-items:center;
+  padding:40px 8px;border-top:1px solid rgba(184,212,227,.14);
+  position:relative;transition:background .35s ease;
+}
+.svc:last-child{border-bottom:1px solid rgba(184,212,227,.14)}
+.svc::after{
+  content:"";position:absolute;left:0;bottom:-1px;height:2px;width:100%;
+  background:var(--flag);transform:scaleX(0);transform-origin:left;
+  transition:transform .5s cubic-bezier(.22,1,.36,1);
+}
+.svc:hover{background:rgba(184,212,227,.03)}
+.svc:hover::after{transform:scaleX(1)}
+.svc h3{font-weight:720;font-stretch:114%;font-size:clamp(1.35rem,2.4vw,1.9rem);letter-spacing:-.005em}
+.svc p{color:var(--muted);font-size:1rem;max-width:46ch}
+.svc-go{
+  width:52px;height:52px;border-radius:50%;border:1px solid rgba(184,212,227,.3);
+  display:grid;place-items:center;transition:border-color .3s ease,background .3s ease;flex:none;
+}
+.svc:hover .svc-go{border-color:var(--flag);background:rgba(255,106,43,.1)}
+.svc-go svg{width:18px;height:18px;stroke:var(--paper);stroke-width:1.6;fill:none}
+
+/* CTA */
+.cta{
+  padding:clamp(110px,14vw,180px) 0;
+  background:
+    radial-gradient(60% 70% at 50% 110%,rgba(255,106,43,.13),transparent 70%),
+    var(--ink-2);
+  border-top:1px solid rgba(184,212,227,.1);
+  text-align:center;
+}
+.cta h2{font-size:clamp(2.4rem,5.6vw,4.6rem);margin-bottom:20px}
+.cta p{color:var(--muted);max-width:44ch;margin:0 auto 42px}
+.cta-row{display:flex;gap:18px;justify-content:center;align-items:center;flex-wrap:wrap}
+.cta-phone{color:var(--muted);font-weight:600;font-size:1.05rem;transition:color .25s}
+.cta-phone:hover{color:var(--paper)}
+
+footer{padding:34px 0;border-top:1px solid rgba(184,212,227,.1)}
+.foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:.85rem}
+
+/* reveal helper (JS drives it) */
+.fade-item{will-change:transform,opacity}
+
+/* ---------------- Responsive ---------------- */
+@media (max-width:920px){
+  .nav-links a:not(.btn){display:none}
+  .titleblock{display:none}
+  .bp-holder{right:-38%;width:120vw;opacity:.3;top:46%}
+  .svc{grid-template-columns:1fr;gap:14px;padding:32px 4px}
+  .svc-go{display:none}
+  .hero-copy{padding:130px 0 120px}
+}
+@media (prefers-reduced-motion:reduce){
+  .tape-inner,.scroll-cue::before{animation:none}
+  .stmt-text .w{opacity:1}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#top" aria-label="Graystone Contracting home">
+      <span class="brand-mark" aria-hidden="true"></span>GRAYSTONE
+    </a>
+    <div class="nav-links">
+      <a href="#services">Services</a>
+      <a href="#about">Why us</a>
+      <a href="#contact">Contact</a>
+      <a href="#contact" class="btn btn-flag btn-sm btn-magnet">Request a bid</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <canvas id="dust" aria-hidden="true"></canvas>
+
+  <div class="bp-holder" aria-hidden="true">
+    <svg id="bp" viewBox="0 0 900 640" xmlns="http://www.w3.org/2000/svg">
+      <!-- centerline -->
+      <line class="dash thin" x1="450" y1="88" x2="450" y2="600"/>
+      <!-- ground -->
+      <line x1="30" y1="560" x2="880" y2="560"/>
+      <!-- foundation -->
+      <rect x="140" y="520" width="620" height="40"/>
+      <line class="thin" x1="168" y1="560" x2="196" y2="520"/>
+      <line class="thin" x1="238" y1="560" x2="266" y2="520"/>
+      <line class="thin" x1="308" y1="560" x2="336" y2="520"/>
+      <line class="thin" x1="378" y1="560" x2="406" y2="520"/>
+      <line class="thin" x1="448" y1="560" x2="476" y2="520"/>
+      <line class="thin" x1="518" y1="560" x2="546" y2="520"/>
+      <line class="thin" x1="588" y1="560" x2="616" y2="520"/>
+      <line class="thin" x1="658" y1="560" x2="686" y2="520"/>
+      <!-- walls -->
+      <line x1="160" y1="300" x2="160" y2="520"/>
+      <line x1="740" y1="300" x2="740" y2="520"/>
+      <line x1="140" y1="300" x2="760" y2="300"/>
+      <!-- studs -->
+      <line class="thin" x1="218" y1="300" x2="218" y2="520"/>
+      <line class="thin" x1="276" y1="300" x2="276" y2="520"/>
+      <line class="thin" x1="334" y1="300" x2="334" y2="520"/>
+      <line class="thin" x1="392" y1="300" x2="392" y2="520"/>
+      <line class="thin" x1="508" y1="300" x2="508" y2="520"/>
+      <line class="thin" x1="566" y1="300" x2="566" y2="520"/>
+      <line class="thin" x1="624" y1="300" x2="624" y2="520"/>
+      <line class="thin" x1="682" y1="300" x2="682" y2="520"/>
+      <!-- roof -->
+      <path d="M110 310 L450 120 L790 310"/>
+      <line x1="450" y1="120" x2="450" y2="300"/>
+      <line class="thin" x1="450" y1="228" x2="322" y2="262"/>
+      <line class="thin" x1="450" y1="228" x2="578" y2="262"/>
+      <!-- chimney -->
+      <path d="M622 216 L622 150 L672 150 L672 244"/>
+      <line x1="612" y1="150" x2="682" y2="150"/>
+      <!-- windows -->
+      <rect x="240" y="360" width="110" height="118"/>
+      <line class="thin" x1="295" y1="360" x2="295" y2="478"/>
+      <line class="thin" x1="240" y1="419" x2="350" y2="419"/>
+      <rect x="550" y="360" width="110" height="118"/>
+      <line class="thin" x1="605" y1="360" x2="605" y2="478"/>
+      <line class="thin" x1="550" y1="419" x2="660" y2="419"/>
+      <!-- door -->
+      <rect x="408" y="398" width="84" height="122"/>
+      <!-- horizontal dimension -->
+      <line class="thin dash" x1="140" y1="566" x2="140" y2="604"/>
+      <line class="thin dash" x1="760" y1="566" x2="760" y2="604"/>
+      <line class="thin" x1="140" y1="598" x2="760" y2="598"/>
+      <line class="thin" x1="134" y1="604" x2="146" y2="592"/>
+      <line class="thin" x1="754" y1="604" x2="766" y2="592"/>
+      <text x="450" y="590" text-anchor="middle">42'-0"</text>
+      <!-- vertical dimension -->
+      <line class="thin dash" x1="796" y1="120" x2="844" y2="120"/>
+      <line class="thin dash" x1="796" y1="560" x2="844" y2="560"/>
+      <line class="thin" x1="838" y1="120" x2="838" y2="560"/>
+      <line class="thin" x1="832" y1="126" x2="844" y2="114"/>
+      <line class="thin" x1="832" y1="566" x2="844" y2="554"/>
+      <text x="856" y="344" text-anchor="middle" transform="rotate(90 856 344)">24'-8"</text>
+    </svg>
+  </div>
+
+  <div class="wrap hero-copy">
+    <p class="kicker fade-item">General contractor <b>—</b> licensed &amp; insured, Southern Maryland</p>
+    <h1>
+      <span class="h-line"><span>Build it once.</span></span>
+      <span class="h-line"><span>Build it right.</span></span>
+    </h1>
+    <p class="hero-sub fade-item">Custom homes, additions, and commercial build-outs for owners who plan on <strong>keeping what they build.</strong> Poured, framed, and finished to a standard — not a schedule.</p>
+    <div class="hero-ctas fade-item">
+      <a href="#contact" class="btn btn-flag btn-magnet">Request a bid</a>
+      <a href="#services" class="btn btn-ghost btn-magnet">What we build</a>
+    </div>
+  </div>
+
+  <div class="scroll-cue fade-item" aria-hidden="true">SCROLL</div>
+  <div class="titleblock fade-item" aria-hidden="true">
+    <div><span>GRAYSTONE CONTRACTING</span><span>SHEET A-1.0</span></div>
+    <div><span>ELEVATION — NORTH</span><span>SCALE 1/4" = 1'-0"</span></div>
+    <div><span>MHIC #000000</span><span>09.15.26</span></div>
+  </div>
+</header>
+
+<div class="tape" aria-hidden="true"><div class="tape-inner"></div></div>
+
+<section class="stmt" id="about">
+  <div class="wrap">
+    <p class="stmt-label fade-item">Why owners call us first</p>
+    <p class="stmt-text" id="stmtText">Most contractors sell speed. We sell the version of your building that's still square in thirty years — where doors don't stick, concrete doesn't crack, and the punch list actually ends.</p>
+    <p class="stmt-body fade-item">Graystone runs one crew per project, start to finish. The estimator who walks your site is the builder who answers for it — no handoffs, no surprises buried in change orders, and a written number we stand behind.</p>
+
+    <div class="dims">
+      <div class="dim fade-item">
+        <div class="dim-rule"><span class="tick"></span><span class="rule"></span><span class="dim-num" data-count="26">0</span><span class="rule"></span><span class="tick"></span></div>
+        <p class="dim-label">years building</p>
+      </div>
+      <div class="dim fade-item">
+        <div class="dim-rule"><span class="tick"></span><span class="rule"></span><span class="dim-num" data-count="312">0</span><span class="rule"></span><span class="tick"></span></div>
+        <p class="dim-label">projects delivered</p>
+      </div>
+      <div class="dim fade-item">
+        <div class="dim-rule"><span class="tick"></span><span class="rule"></span><span class="dim-num" data-count="94" data-suffix="%">0</span><span class="rule"></span><span class="tick"></span></div>
+        <p class="dim-label">repeat &amp; referral work</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="svcs" id="services">
+  <div class="wrap">
+    <div class="svcs-head">
+      <h2 class="fade-item">What we build</h2>
+      <p class="fade-item">Three lanes, one standard. If it's not on this list, we'll tell you who to call instead.</p>
+    </div>
+
+    <a class="svc fade-item" href="#contact">
+      <h3>Custom homes</h3>
+      <p>From your architect's drawings or ours — foundation to final walkthrough, one crew accountable for all of it.</p>
+      <span class="svc-go" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </a>
+    <a class="svc fade-item" href="#contact">
+      <h3>Additions &amp; renovations</h3>
+      <p>Second stories, kitchens, whole-floor gut jobs — tied into the existing structure like it was always there.</p>
+      <span class="svc-go" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </a>
+    <a class="svc fade-item" href="#contact">
+      <h3>Commercial build-outs</h3>
+      <p>Tenant fit-outs and light commercial, built around your opening date and passed on the first inspection.</p>
+      <span class="svc-go" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </a>
+  </div>
+</section>
+
+<section class="cta" id="contact">
+  <div class="wrap">
+    <h2 class="fade-item">Have a plan? Bring it to us.</h2>
+    <p class="fade-item">Walk us through the project. We'll walk the site, price it straight, and put the number in writing.</p>
+    <div class="cta-row fade-item">
+      <a href="#contact" class="btn btn-flag btn-magnet">Request a bid</a>
+      <a href="tel:+12405550117" class="cta-phone">(240) 555-0117</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 Graystone Contracting. Licensed &amp; insured, MHIC #000000.</span>
+    <span>Site by Lee Marketing Mastery</span>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lenis/1.1.13/lenis.min.js"></script>
+<script>
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hasGsap = typeof window.gsap !== 'undefined';
+
+  /* ---------- nav scrolled state ---------- */
+  var nav = document.getElementById('nav');
+  function navState(){ nav.classList.toggle('scrolled', window.scrollY > 24); }
+  window.addEventListener('scroll', navState, {passive:true});
+  navState();
+
+  /* ---------- smooth scroll (Lenis) ---------- */
+  var lenis = null;
+  if (!reduced && typeof window.Lenis !== 'undefined' && hasGsap){
+    lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 1 });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(function(t){ lenis.raf(t * 1000); });
+    gsap.ticker.lagSmoothing(0);
+  }
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      var id = a.getAttribute('href');
+      if (id.length < 2) return;
+      var el = document.querySelector(id);
+      if (!el) return;
+      e.preventDefault();
+      if (lenis) lenis.scrollTo(el, {offset: -70, duration: 1.4});
+      else el.scrollIntoView({behavior: reduced ? 'auto' : 'smooth'});
+    });
+  });
+
+  /* ---------- split statement into words ---------- */
+  var stmt = document.getElementById('stmtText');
+  if (stmt){
+    var words = stmt.textContent.trim().split(/\s+/);
+    stmt.innerHTML = words.map(function(w){ return '<span class="w">' + w + '</span>'; }).join(' ');
+  }
+
+  /* ---------- dust particles ---------- */
+  var canvas = document.getElementById('dust');
+  if (canvas && !reduced){
+    var ctx = canvas.getContext('2d');
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var W, H, parts = [];
+    function sizeCanvas(){
+      W = canvas.offsetWidth; H = canvas.offsetHeight;
+      canvas.width = W * dpr; canvas.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    function seed(){
+      parts = [];
+      var n = Math.min(46, Math.floor(W / 30));
+      for (var i = 0; i < n; i++){
+        parts.push({
+          x: Math.random() * W, y: Math.random() * H,
+          r: Math.random() * 1.6 + .4,
+          vx: (Math.random() - .5) * .12,
+          vy: -(Math.random() * .18 + .05),
+          a: Math.random() * .16 + .04,
+          tw: Math.random() * Math.PI * 2
+        });
+      }
+    }
+    function tick(){
+      ctx.clearRect(0, 0, W, H);
+      for (var i = 0; i < parts.length; i++){
+        var p = parts[i];
+        p.x += p.vx; p.y += p.vy; p.tw += .02;
+        if (p.y < -4){ p.y = H + 4; p.x = Math.random() * W; }
+        if (p.x < -4) p.x = W + 4; if (p.x > W + 4) p.x = -4;
+        ctx.globalAlpha = p.a * (0.7 + 0.3 * Math.sin(p.tw));
+        ctx.fillStyle = '#B8D4E3';
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+      }
+      requestAnimationFrame(tick);
+    }
+    sizeCanvas(); seed(); tick();
+    window.addEventListener('resize', function(){ sizeCanvas(); seed(); });
+  }
+
+  /* ---------- magnetic buttons (fine pointers only) ---------- */
+  if (hasGsap && !reduced && window.matchMedia('(pointer: fine)').matches){
+    document.querySelectorAll('.btn-magnet').forEach(function(btn){
+      btn.addEventListener('mousemove', function(e){
+        var r = btn.getBoundingClientRect();
+        var dx = e.clientX - (r.left + r.width / 2);
+        var dy = e.clientY - (r.top + r.height / 2);
+        gsap.to(btn, {x: dx * .22, y: dy * .32, duration: .4, ease: 'power2.out'});
+      });
+      btn.addEventListener('mouseleave', function(){
+        gsap.to(btn, {x: 0, y: 0, duration: .7, ease: 'elastic.out(1, .45)'});
+      });
+    });
+  }
+
+  if (!hasGsap) return;               /* everything below needs GSAP    */
+  gsap.registerPlugin(ScrollTrigger);
+
+  if (reduced){                        /* reduced motion: draw everything */
+    document.querySelectorAll('#bp text').forEach(function(t){ t.style.opacity = 1; });
+    return;
+  }
+
+  /* ---------- hero entrance (the one big moment) ---------- */
+  var strokes = document.querySelectorAll('#bp path, #bp line, #bp rect');
+  strokes.forEach(function(s){
+    var len = s.getTotalLength ? s.getTotalLength() : 600;
+    s.style.strokeDasharray = len;
+    s.style.strokeDashoffset = len;
+  });
+
+  var intro = gsap.timeline({defaults:{ease:'power3.out'}});
+  intro
+    .set('.h-line > span', {yPercent: 115})
+    .set('.fade-item', {autoAlpha: 0, y: 26})
+    .set('.nav', {autoAlpha: 0, y: -16})
+    .to(strokes, {strokeDashoffset: 0, duration: 2.3, ease: 'power2.inOut', stagger: {each: .028, from: 'start'}}, .15)
+    .to('#bp text', {opacity: .9, duration: .8}, 1.9)
+    .to('.h-line > span', {yPercent: 0, duration: 1.15, ease: 'power4.out', stagger: .14}, .4)
+    .to('.hero .kicker', {autoAlpha: 1, y: 0, duration: .8}, .55)
+    .to('.hero-sub', {autoAlpha: 1, y: 0, duration: .9}, .95)
+    .to('.hero-ctas', {autoAlpha: 1, y: 0, duration: .9}, 1.15)
+    .to('.nav', {autoAlpha: 1, y: 0, duration: .8}, 1.3)
+    .to('.scroll-cue, .titleblock', {autoAlpha: 1, y: 0, duration: .9}, 1.6);
+
+  /* ---------- hero scroll-out parallax ---------- */
+  gsap.to('.hero-copy', {
+    y: -70, autoAlpha: .25, ease: 'none',
+    scrollTrigger: {trigger: '.hero', start: 'top top', end: 'bottom 40%', scrub: true}
+  });
+  gsap.to('.bp-holder', {
+    y: -120, ease: 'none',
+    scrollTrigger: {trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true}
+  });
+
+  /* ---------- statement word fill ---------- */
+  gsap.to('.stmt-text .w', {
+    opacity: 1, stagger: .05, ease: 'none',
+    scrollTrigger: {trigger: '.stmt-text', start: 'top 78%', end: 'top 30%', scrub: true}
+  });
+
+  /* ---------- generic reveals (consistent, restrained) ---------- */
+  gsap.utils.toArray('section .fade-item, footer .fade-item').forEach(function(el){
+    gsap.fromTo(el, {autoAlpha: 0, y: 34}, {
+      autoAlpha: 1, y: 0, duration: 1, ease: 'power3.out',
+      scrollTrigger: {trigger: el, start: 'top 86%'}
+    });
+  });
+
+  /* ---------- dimension rules grow + counters ---------- */
+  gsap.utils.toArray('.dim').forEach(function(dim){
+    var rules = dim.querySelectorAll('.rule');
+    var num = dim.querySelector('.dim-num');
+    var target = parseInt(num.dataset.count, 10);
+    var suffix = num.dataset.suffix || '';
+    var obj = {v: 0};
+    gsap.fromTo(rules, {scaleX: 0}, {
+      scaleX: 1, duration: 1.1, ease: 'power3.out',
+      scrollTrigger: {trigger: dim, start: 'top 88%'}
+    });
+    gsap.to(obj, {
+      v: target, duration: 1.6, ease: 'power2.out',
+      scrollTrigger: {trigger: dim, start: 'top 88%'},
+      onUpdate: function(){ num.textContent = Math.round(obj.v) + suffix; }
+    });
+  });
+})();
+</script>
+</body>
+</html>
